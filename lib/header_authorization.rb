@@ -11,18 +11,22 @@ module HeaderAuthorization
   
   def authenticate_with_header
     unless self.current_user
-      if !headers[auth_config].blank?
-        self.current_user = User.find_by_email(headers[auth_config])
+      if !headers[auth_header].blank?
+        self.current_user = User.send("find_by_#{auth_attr}",headers[auth_header])
       end
     end
   end
   
-  def auth_config
+  def auth_header
     Radiant::Config[HEADER_AUTHORIZE_KEY].downcase.to_sym || :user_email
+  end
+  
+  def auth_attr
+    Radiant::Config[HEADER_AUTHORIZE_ATTR].downcase || 'email'
   end
   
   # Stub out header
   def stubbed_header_for_development
-    headers[auth_config] = 'tester@test.com' if RAILS_ENV == 'development'
+    headers[auth_header] = 'tester@test.com' if RAILS_ENV == 'development'
   end
 end
