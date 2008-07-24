@@ -6,4 +6,6 @@ An @authenticate_with_header@ method is added as a before_filter on the Applicat
 
 This requires that you manage your user accounts so that all active users have valid email addresses listed in the Radiant database.
 
+See HELP_admin.markdown for more details.
+
 Built by Saturn Flyer http://www.saturnflyer.com
