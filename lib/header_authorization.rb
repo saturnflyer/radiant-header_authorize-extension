@@ -27,6 +27,8 @@ module HeaderAuthorization
   
   # Stub out header
   def stubbed_header_for_development
-    headers[auth_header] = 'tester@test.com' if RAILS_ENV == 'development'
+    if RAILS_ENV == 'development' && !Radiant::Config[HEADER_AUTHORIZE_DEV_ACCOUNT].blank?
+      headers[auth_header] = Radiant::Config[HEADER_AUTHORIZE_DEV_ACCOUNT]
+    end
   end
 end

@@ -4,9 +4,23 @@ An `authenticate_with_header` method is added as a before_filter on the Applicat
 
 This requires that you manage your user accounts so that all active users have valid information listed in the Radiant database.
 
-If you would like to change the Header or Attribute used to authorize users from a rake task you may run
+== Rake Task
 
-	rake radiant:extensions:header_authorize:set HEADER='AUTHORIZED_USER' ATTRIBUTE='login'
+If you would like to change the Header, Attribute and/or Development Account used to authorize users from a rake task you may run
+
+	rake radiant:extensions:header_authorize:set HEADER='AUTHORIZED_USER' ATTRIBUTE='login' DEV_ACCOUNT='admin'
+
+1. The `HEADER` variable specifies the HTTP Header that will be used for authorization.
+2. The `ATTRIBUTE` variable specifies the attribute on the user account that will be used for authorization.
+3. The `DEV_ACCOUNT` variable specifies the information in a user account that will be used for authorization. If you would like to disable the DEV_ACCOUNT feature, simply set the value to a blank string and restart.
+	
+== Configuration
+
+Values are stored in the config database table as:
+
+* authorization.header
+* authorization.attribute
+* authorization.development.account
 
 Built by Saturn Flyer 
 
