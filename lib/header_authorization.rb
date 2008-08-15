@@ -18,11 +18,11 @@ module HeaderAuthorization
   end
   
   def auth_header
-    Radiant::Config[HEADER_AUTHORIZE_KEY].downcase.to_sym || :user_email
+    Radiant::Config[HEADER_AUTHORIZE_KEY].downcase.to_sym || :user_id
   end
   
   def auth_attr
-    Radiant::Config[HEADER_AUTHORIZE_ATTR].downcase || 'email'
+    Radiant::Config[HEADER_AUTHORIZE_ATTR].downcase || 'login'
   end
   
   # Stub out header
