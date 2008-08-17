@@ -1,13 +1,11 @@
 module HeaderAuthorization
   def self.append_features(base)
     base.class_eval %{
-      before_filter :stubbed_header_for_development
+      before_filter :stub_header_for_development
       before_filter :authenticate_with_header
     }
     super
   end
-  
-  protected
   
   def authenticate_with_header
     unless self.current_user
@@ -26,7 +24,7 @@ module HeaderAuthorization
   end
   
   # Stub out header
-  def stubbed_header_for_development
+  def stub_header_for_development
     if RAILS_ENV == 'development' && !Radiant::Config[HEADER_AUTHORIZE_DEV_ACCOUNT].blank?
       request.env[auth_header] = Radiant::Config[HEADER_AUTHORIZE_DEV_ACCOUNT]
     end
