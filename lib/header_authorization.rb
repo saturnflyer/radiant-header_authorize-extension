@@ -8,25 +8,37 @@ module HeaderAuthorization
   end
   
   def auth_header
-    Radiant::Config[HEADER_AUTHORIZE_KEY] || 'HTTP_USER_ID'
+    config[HEADER_AUTHORIZE_KEY] || 'HTTP_USER_ID'
   end
   
   def auth_attr
-    Radiant::Config[HEADER_AUTHORIZE_ATTR] || 'login'
+    config[HEADER_AUTHORIZE_ATTR] || 'login'
+  end
+  
+  def auth_anonymous_redirect_location
+    config[HEADER_AUTHORIZE_ANONYMOUS_REDIRECT] || '/'
+  end
+  
+  def auth_anonymous_val
+    config[HEADER_AUTHORIZE_ANONYMOUS_VAL] || 'anonymous'
   end
   
   def authenticate_with_header
-    unless self.current_user
+    unless current_user
       if !request.env[auth_header].blank?
         if self.current_user = User.send("find_by_#{auth_attr}",request.env[auth_header])
           self.send(:set_current_user)
         else
-          if Radiant::Config[HEADER_AUTHORIZE_USER_INIT]
+          if config[HEADER_AUTHORIZE_USER_INIT] && request.env[auth_header] != auth_anonymous_val
             self.current_user = User.create!(:login => request.env[auth_header], :name => request.env[auth_header], :password => request.env[auth_header], :password_confirmation => request.env[auth_header])
             self.send(:set_current_user)
             flash[:notice] = 'Welcome. A new account has been created for you.'
           end
         end
+      end
+    else
+      if !request.env[auth_header].blank? && auth_anonymous_val == request.env[auth_header] && request.url.match('/admin')
+        redirect_to auth_anonymous_redirect_location
       end
     end
   end

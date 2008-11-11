@@ -3,6 +3,8 @@ HEADER_AUTHORIZE_KEY = 'authorization.header'
 HEADER_AUTHORIZE_ATTR = 'authorization.attribute'
 HEADER_AUTHORIZE_DEV_ACCOUNT = 'authorization.development.account'
 HEADER_AUTHORIZE_USER_INIT = 'authorization.users.create'
+HEADER_AUTHORIZE_ANONYMOUS_VAL = 'authorization.anonymous.value'
+HEADER_AUTHORIZE_ANONYMOUS_REDIRECT = 'authorization.anonymous.redirect'
 
 class HeaderAuthorizeExtension < Radiant::Extension
   version "1.0"
@@ -33,6 +35,20 @@ class HeaderAuthorizeExtension < Radiant::Extension
         auth_config = Radiant::Config.find_by_key(HEADER_AUTHORIZE_USER_INIT)
         if auth_config.respond_to?(:description)
           auth_config.update_attribute :description, "When this is set to true, any authorized use that enters will have a user account created for them. To disable this, set the value to 'false'"
+        end
+      end
+      if Radiant::Config[HEADER_AUTHORIZE_ANONYMOUS_VAL].blank?
+        Radiant::Config[HEADER_AUTHORIZE_ANONYMOUS_VAL] = 'anonymous'
+        auth_config = Radiant::Config.find_by_key(HEADER_AUTHORIZE_ANONYMOUS_VAL)
+        if auth_config.respond_to?(:description)
+          auth_config.update_attribute :description, "A user with this given value for her authorization.header will be used to restricted from access."
+        end
+      end
+      if Radiant::Config[HEADER_AUTHORIZE_ANONYMOUS_REDIRECT].blank?
+        Radiant::Config[HEADER_AUTHORIZE_ANONYMOUS_REDIRECT] = '/'
+        auth_config = Radiant::Config.find_by_key(HEADER_AUTHORIZE_ANONYMOUS_REDIRECT)
+        if auth_config.respond_to?(:description)
+          auth_config.update_attribute :description, "An anonymous user will be redirected to the location given here."
         end
       end
       if RAILS_ENV == 'development'
